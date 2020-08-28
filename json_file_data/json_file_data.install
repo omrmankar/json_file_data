@@ -1,0 +1,142 @@
+<?php
+
+/**
+ * Implements hook_schema().
+ */
+use Drupal\Core\Database\Database;
+
+function json_file_data_schema()
+{
+  $schema['json_name_tbl'] = [
+    'description' => 'The base table for content  table',
+    'fields' => [
+      'json_name_id' => [
+        'description' => 'Primary key of the language unique json_name ID',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'page_name' => [
+        'description' => 'for pages name',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ],
+      'is_active' => [
+        'description' => 'status',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ],
+
+      'last_updated' => [
+        'description' => 'last update time',
+        'type' => 'varchar',
+        'mysql_type' => 'datetime',
+        'not null' => FALSE,
+      ],
+
+      'created_date' => [
+        'description' => 'created date time',
+        'type' => 'varchar',
+        'mysql_type' => 'datetime',
+        'not null' => FALSE,
+      ],
+    ],
+    'primary key' => ['json_name_id'],
+  ];
+
+  $schema['json_key_val_tbl'] = [
+    'description' => 'The base table for content  table',
+    'fields' => [
+      'jkv_id' => [
+        'description' => 'Primary key of the language content unique JSON Key and Value ID',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+
+      'lang_id' => [
+        'description' => 'Primary key of the language content unique Language ID',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ],
+
+      'jn_id' => [
+        'description' => 'Primary key of the language content unique JSON Name id',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+
+      'json_key' => [
+        'description' => 'key of json',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ],
+
+      'select_type' => [
+        'description' => 'save select type in database for retrive type of fields',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ],
+
+      'key_value_fmt' => [
+        'description' => 'value of of key',
+        'type' => 'blob',
+        'length' => 255,
+        'not null' => TRUE,
+      ],
+
+      'key_value_text' => [
+        'description' => 'value of of key in textfield formate',
+        'type' => 'blob',
+        'length' => 255,
+        'not null' => TRUE,
+      ],
+
+
+      'key_value_img' => [
+        'description' => 'key of image path',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ],
+
+
+      'key_value_img_alt' => [
+        'description' => 'key of image alt tag',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ],
+
+      'last_updated' => [
+        'description' => 'last update time',
+        'type' => 'tinyblob',
+        'mysql_type' => 'datetime',
+        'not null' => FALSE,
+      ],
+
+      'created_date' => [
+        'description' => 'created date and time',
+        'type' => 'varchar',
+        'mysql_type' => 'datetime',
+        'not null' => FALSE,
+      ],
+    ],
+    'primary key' => ['jkv_id'],
+  ];
+  return $schema;
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function json_file_data_uninstall() {
+  Database::getConnection()->schema()->dropTable('json_name_tbl');
+  Database::getConnection()->schema()->dropTable('json_key_val_tbl');
+}

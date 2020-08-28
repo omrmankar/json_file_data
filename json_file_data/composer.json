@@ -1,0 +1,13 @@
+{
+    "name": "json_file_data",
+    "type": "drupal-module",
+    "description": "In This module creating form for creating data",
+    "keywords": [
+    ],
+    "homepage": "https://www.drupal.org/project/json_file_data",
+    "minimum-stability": "dev",
+    "support": {
+        "issues": "https://www.drupal.org/project/issues/json_file_data",
+        "source": "http://cgit.drupalcode.org/json_file_data",
+    },
+}

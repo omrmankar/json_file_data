@@ -1,0 +1,35 @@
+<?php
+
+/**
+ * @file
+ * Contains json_file_data.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function json_file_data_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the json_file_data module.
+    case 'help.page.json_file_data':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('In This module creating form for creating data') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function json_file_data_theme() {
+  return [
+    'json_file_data' => [
+      'render element' => 'children',
+    ],
+  ];
+}

@@ -1,0 +1,42 @@
+json_file_data.jsondataform:
+  path: '/json-key-value-form'
+  defaults:
+    _form: '\Drupal\json_file_data\Form\JsonDataForm'
+    _title: 'JSON key and value Form'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+json_file_data.jsonnameform:
+  path: '/json-name-form'
+  defaults:
+    _form: '\Drupal\json_file_data\Form\ContentForm'
+    _title: 'Enter File Name Form'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+json_file_data.jsondatalisting:
+ path: '/json-key-value-form/listing'
+ defaults:
+   _title: 'Listing Of JSON Keys and Value'
+   _controller: '\Drupal\json_file_data\Controller\ViewDataController::json_key_val_listing'
+ requirements:
+   _user_is_logged_in: 'TRUE'
+json_file_data.jsonview_data:
+ path: '/jsonview_data/{lang}'
+ defaults:
+   _title: 'Listing Of JSON Keys and Value'
+   _controller: '\Drupal\json_file_data\Controller\ViewDataController::getDetails'
+ requirements:
+    _user_is_logged_in: 'TRUE'
+json_file_data.delete_form:
+  path: '/json-key-value-form/delete/{jkv_id}'
+  defaults:
+    _form: '\Drupal\json_file_data\Form\DeleteForm'
+    _title: 'DeleteForm'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+json_file_data.edit:
+  path: '/json-key-value-form/edit/{jkv_id}'
+  defaults:
+    _form: '\Drupal\json_file_data\Form\JsonDataForm'
+    _title: 'Edit Form'
+  requirements:
+    _user_is_logged_in: 'TRUE'

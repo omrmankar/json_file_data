@@ -1,0 +1,5 @@
+name: 'Json File Data'
+type: module
+description: 'In This module creating JSON file and JSON key and value'
+core: 8.x
+package: 'custom'
