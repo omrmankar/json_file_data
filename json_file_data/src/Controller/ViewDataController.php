@@ -92,20 +92,28 @@ class ViewDataController extends ControllerBase
 
         foreach ($response as $jsonvalue) {
             $json_key[] = $jsonvalue->json_key;
-            if(!is_null($jsonvalue->key_value_fmt)){
-                $val = $jsonvalue->key_value_fmt;
-            }else if(!is_null($jsonvalue->key_value_text)){
-                $val = $jsonvalue->key_value_text;
-            }else if((!is_null($jsonvalue->key_value_img))&&(!is_null($jsonvalue->key_value_img_alt))){
+           if((!is_null($jsonvalue->key_value_img))&&(!is_null($jsonvalue->key_value_img_alt))){
                 $val['src']=$jsonvalue->key_value_img;
                 $val['alt']= $jsonvalue->key_value_img_alt;
-            }else{
-             $val= NULL;
             }
-            $key_value[] = $val;
+
+            if(!is_null($jsonvalue->key_value_fmt)){
+                $key_value_fmt =html_entity_decode($jsonvalue->key_value_fmt, ENT_QUOTES);
+            }
+
+            if(!is_null($jsonvalue->key_value_text)){
+                $key_value_text = $jsonvalue->key_value_text;
+            }
+            $key_value[] = array_filter([array_filter($val),$key_value_fmt, $key_value_text]);
         }
 
-        $datajson = array_combine($json_key, $key_value);
+        foreach ($key_value as  $newvalue) {
+           foreach ($newvalue as $finalvalue) {
+              $json_val[]= $finalvalue;
+           }
+        }
+
+        $datajson = array_combine($json_key, $json_val);
 
         return new JsonResponse($datajson);
 

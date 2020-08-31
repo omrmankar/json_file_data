@@ -8,6 +8,7 @@ use Drupal\Core\Url;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Language\Language;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Drupal\file\Entity\File;
 
 
 /**
@@ -52,6 +53,7 @@ class JsonDataForm extends FormBase
         '#default_value' => (isset($record['json_key']) && $jkv_id) ? $record['json_key']:'',
       ];
 
+
       $form['select_type'] = [
         '#type' => 'radios',
         '#title' => t('Select Type Of Value'),
@@ -67,6 +69,7 @@ class JsonDataForm extends FormBase
             'wrapper' => 'typeof_fmt_check_container',
             'effect' => 'fade',
          ],
+         '#disabled' => (isset($record['select_type']) && $jkv_id) ? $record['select_type']:'',
       ];
 
       $form['typeof_fmt_check_container'] = [
@@ -74,17 +77,15 @@ class JsonDataForm extends FormBase
         '#attributes' => ['id' => 'typeof_fmt_check_container'],
       ];
 
-
-
-      if ($form_state->getValue('select_type') === 'textarea') {
+      if (($form_state->getValue('select_type')  === 'textarea') || ($form['select_type']['#default_value'] === 'textarea')) {
           $form['typeof_fmt_check_container']['key_value_fmt'] = [
             '#type' => 'text_format',
             '#title' => $this->t('Data Value Formatted'),
             '#format' => 'full_html',
             '#description' => $this->t('Please enter value of you key.'),
-            '#default_value' => (isset($record['key_value_fmt']) && $jkv_id) ? $record['key_value_fmt']:'',
+           '#default_value' => (isset($record['key_value_fmt']) && $jkv_id) ? $record['key_value_fmt']:'',
           ];
-      }else if ($form_state->getValue('select_type') === 'textfield') {
+      }else if (($form_state->getValue('select_type') === 'textfield') || ($form['select_type']['#default_value'] === 'textfield')){
           $form['typeof_fmt_check_container']['key_value_text'] = [
             '#type' => 'textfield',
             '#title' => $this->t('Data Key Textfield'),
@@ -93,7 +94,7 @@ class JsonDataForm extends FormBase
             '#size' => 64,
             '#default_value' => (isset($record['key_value_text']) && $jkv_id) ? $record['key_value_text']:'',
           ];
-      }else if ($form_state->getValue('select_type') === 'image'){
+      }else if (($form_state->getValue('select_type') === 'image') || ($form['select_type']['#default_value'] === 'image')){
           $form['typeof_fmt_check_container']['key_value_img'] = [
             '#title' => t('Image Value'),
             '#type' => 'file',
@@ -116,6 +117,7 @@ class JsonDataForm extends FormBase
               '#maxlength' => 2048,
           ];
       }
+
 
        $langcodes = \Drupal::languageManager()->getLanguages();
 
@@ -173,7 +175,9 @@ class JsonDataForm extends FormBase
      * returns it as a form (renderable array).
      */
     public function typeof_fmt_checkCallback($form, FormStateInterface $form_state) {
+     if(!empty($form_state->getValue('select_type')) || !empty($form['select_type']['#default_value'])){
       return $form['typeof_fmt_check_container'];
+     }
     }
 
 
@@ -196,7 +200,6 @@ class JsonDataForm extends FormBase
 
        $keysvalues = $form_state->getUserInput();
 
-
       $key_value_fmt_val = isset($keysvalues['key_value_fmt']['value']) ? $keysvalues['key_value_fmt']['value'] : '';
       $key_value_img_alt = isset($keysvalues['key_value_img_alt']) ? $keysvalues['key_value_img_alt'] : '';
       $key_value_text = isset($keysvalues['key_value_text']) ? $keysvalues['key_value_text'] : '';
@@ -210,7 +213,7 @@ class JsonDataForm extends FormBase
                   'lang_id' =>  $keysvalues['lang_id'],
                   'jn_id' =>  $keysvalues['jn_id'],
                   'json_key' =>  $keysvalues['json_key'],
-                  'select_type' =>  $keysvalues['select_type'],
+                 // 'select_type' =>  $keysvalues['select_type'],
                   'key_value_fmt' =>  $key_value_fmt_val,
                   'key_value_text' => $key_value_text,
                   'key_value_img' =>  $key_value_img,
