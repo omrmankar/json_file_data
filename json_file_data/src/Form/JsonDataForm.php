@@ -38,6 +38,9 @@ class JsonDataForm extends FormBase
               ->fields('m');
           $record = $query->execute()->fetchAssoc();
       }
+     // $form_state->disableCache();
+    //  print_r($record['key_value_img']);
+    //  exit();
 
       $form['jkv_id'] = [
         '#type' => 'hidden',
@@ -53,71 +56,95 @@ class JsonDataForm extends FormBase
         '#default_value' => (isset($record['json_key']) && $jkv_id) ? $record['json_key']:'',
       ];
 
-
       $form['select_type'] = [
         '#type' => 'radios',
         '#title' => t('Select Type Of Value'),
-        '#default_value' => (isset($record['select_type']) && $jkv_id) ? $record['select_type']:'',
         '#options' => [
                        'textfield'=>t('TextField'),
                        'textarea'=>t('Textarea'),
                        'image'=>t('Image'),
                      ],
-        '#ajax' => [
-            'callback' => '::typeof_fmt_checkCallback',
-            'event' => 'change',
-            'wrapper' => 'typeof_fmt_check_container',
-            'effect' => 'fade',
-         ],
          '#disabled' => (isset($record['select_type']) && $jkv_id) ? $record['select_type']:'',
+         '#attributes' => [
+          'name' => 'field_select',
+        ],
+        '#default_value' => (isset($record['select_type']) && $jkv_id) ? $record['select_type']:'',
       ];
 
-      $form['typeof_fmt_check_container'] = [
-        '#type' => 'container',
-        '#attributes' => ['id' => 'typeof_fmt_check_container'],
+      $form['key_value_fmt'] = [
+          '#type' => 'text_format',
+          '#title' => $this->t('Data Value Formatted'),
+          '#format' => 'full_html',
+          '#description' => $this->t('Please enter value of you key.'),
+          '#default_value' => (isset($record['key_value_fmt']) && $jkv_id) ? $record['key_value_fmt']:'',
+          '#states' => [
+            //show this textfield only if the radio 'other' is selected above
+            'visible' => [
+              //don't mistake :input for the type of field. You'll always use
+              //:input here, no matter whether your source is a select, radio or checkbox element.
+              ':input[name="field_select"]' => ['value' => 'textarea'],
+          ],
+          ],
       ];
 
-      if (($form_state->getValue('select_type')  === 'textarea') || ($form['select_type']['#default_value'] === 'textarea')) {
-          $form['typeof_fmt_check_container']['key_value_fmt'] = [
-            '#type' => 'text_format',
-            '#title' => $this->t('Data Value Formatted'),
-            '#format' => 'full_html',
-            '#description' => $this->t('Please enter value of you key.'),
-           '#default_value' => (isset($record['key_value_fmt']) && $jkv_id) ? $record['key_value_fmt']:'',
-          ];
-      }else if (($form_state->getValue('select_type') === 'textfield') || ($form['select_type']['#default_value'] === 'textfield')){
-          $form['typeof_fmt_check_container']['key_value_text'] = [
-            '#type' => 'textfield',
-            '#title' => $this->t('Data Key Textfield'),
-            '#description' => $this->t('Please enter data key.'),
-            '#maxlength' => 64,
-            '#size' => 64,
-            '#default_value' => (isset($record['key_value_text']) && $jkv_id) ? $record['key_value_text']:'',
-          ];
-      }else if (($form_state->getValue('select_type') === 'image') || ($form['select_type']['#default_value'] === 'image')){
-          $form['typeof_fmt_check_container']['key_value_img'] = [
-            '#title' => t('Image Value'),
-            '#type' => 'file',
-            '#upload_location' => 'public://jsondata/',
-            '#multiple' => FALSE,
-            '#default_value' => (isset($record['key_value_img']) && $jkv_id) ? $record['key_value_img']:'',
-            '#upload_validators' => [
-              'file_validate_extensions' => ['png gif jpg jpeg jfif svg'],
-              'file_validate_size' => [25600000],
-              // 'file_validate_image_resolution' => array('800x600', '400x300'),.
+
+       $form['key_value_text'] = [
+          '#type' => 'textfield',
+          '#title' => $this->t('Data Key Textfield'),
+          '#description' => $this->t('Please enter data key.'),
+          '#maxlength' => 64,
+          '#size' => 64,
+          '#default_value' => (isset($record['key_value_text']) && $jkv_id) ? $record['key_value_text']:'',
+          '#states' => [
+          //show this textfield only if the radio 'other' is selected above
+          'visible' => [
+            //don't mistake :input for the type of field. You'll always use
+            //:input here, no matter whether your source is a select, radio or checkbox element.
+            ':input[name="field_select"]' => ['value' => 'textfield'],
+          ],
+          ],
+      ];
+
+        $form['fieldset_classic'] = [
+          '#type' => 'fieldset',
+          '#title' => $this->t('Image'),
+          '#states' => [
+            //show this textfield only if the radio 'other' is selected above
+            'visible' => [
+              //don't mistake :input for the type of field. You'll always use
+              //:input here, no matter whether your source is a select, radio or checkbox element.
+              ':input[name="field_select"]' => ['value' => 'image'],
             ],
-          ];
-          $form['typeof_fmt_check_container']['key_value_img_alt'] = [
-              '#title' => $this->t('Alternative text'),
-              '#description' => $this->t('Short description of the image used by screen readers and displayed when the image is not loaded. This is important for accessibility.'),
-              '#type' => 'textfield',
-              '#required' => TRUE,
-              '#required_error' => $this->t('Alternative text is required.<br />(Only in rare cases should this be left empty. To create empty alternative text, enter <code>""</code> — two double quotes without any content).'),
-              '#default_value' => (isset($record['key_value_img_alt']) && $jkv_id) ? $record['key_value_img_alt']:'',
-              '#maxlength' => 2048,
-          ];
-      }
+          ],
+        ];
+      //  $values['fids'][0] = $record['key_value_img']->target_id;
 
+        $form['fieldset_classic']['key_value_img'] = [
+          '#title' => t('Image Value'),
+          '#type' => 'managed_file',
+          '#upload_location' => 'public://jsondata/',
+          '#multiple' => FALSE,
+          //'#required' => TRUE,
+          '#field_prefix' => '<div id="mtrend-wrapper">',
+          '#field_suffix' => '</div>',
+          '#default_value' => [(isset($record['key_value_img']) && $jkv_id) ? $record['key_value_img']:''],
+          '#upload_validators' => [
+            'file_validate_extensions' => ['png gif jpg jpeg jfif svg'],
+            'file_validate_size' => [25600000],
+            //'file_validate_image_resolution' => array('800x600', '400x300'),
+            'disable-refocus' => FALSE,
+          ],
+      ];
+
+      $form['fieldset_classic']['key_value_img_alt'] = [
+          '#title' => $this->t('Alternative text'),
+          '#description' => $this->t('Short description of the image used by screen readers and displayed when the image is not loaded. This is important for accessibility.'),
+          '#type' => 'textfield',
+          //'#required' => TRUE,
+          '#required_error' => $this->t('Alternative text is required.<br />(Only in rare cases should this be left empty. To create empty alternative text, enter <code>""</code> — two double quotes without any content).'),
+          '#default_value' => (isset($record['key_value_img_alt']) && $jkv_id) ? $record['key_value_img_alt']:'',
+          '#maxlength' => 2048,
+      ];
 
        $langcodes = \Drupal::languageManager()->getLanguages();
 
@@ -168,17 +195,6 @@ class JsonDataForm extends FormBase
       return $form;
     }
 
-    /**
-     * Callback for ajax_example_autotextfields.
-     *
-     * Selects the piece of the form we want to use as replacement markup and
-     * returns it as a form (renderable array).
-     */
-    public function typeof_fmt_checkCallback($form, FormStateInterface $form_state) {
-     if(!empty($form_state->getValue('select_type')) || !empty($form['select_type']['#default_value'])){
-      return $form['typeof_fmt_check_container'];
-     }
-    }
 
 
     /**
@@ -200,10 +216,28 @@ class JsonDataForm extends FormBase
 
        $keysvalues = $form_state->getUserInput();
 
+
+
       $key_value_fmt_val = isset($keysvalues['key_value_fmt']['value']) ? $keysvalues['key_value_fmt']['value'] : '';
       $key_value_img_alt = isset($keysvalues['key_value_img_alt']) ? $keysvalues['key_value_img_alt'] : '';
       $key_value_text = isset($keysvalues['key_value_text']) ? $keysvalues['key_value_text'] : '';
-      $key_value_img = isset( $keysvalues['files']['key_value_img']) ?  $keysvalues['files']['key_value_img'] : '';
+      $key_value_img = isset($keysvalues['key_value_img']['fids']) ?  $keysvalues['key_value_img']['fids'] : '';
+
+      /* Fetch the array of the file stored temporarily in database */
+        $image = $key_value_img;
+
+      // // /* Load the object of the file by it's fid */
+        $file = File::load($image);
+
+      // /* Set the status flag permanent of the file object */
+        $file->setPermanent();
+
+      // /* Save the file in database */
+        $file->save();
+
+       $uri = $file->getFileUri();
+      //  print_r($uri);
+      //  exit();
 
       $jid = $form_state->getValue('jkv_id');
       if (isset($jid)){
@@ -231,7 +265,7 @@ class JsonDataForm extends FormBase
                   'lang_id' =>  $keysvalues['lang_id'],
                   'jn_id' =>  $keysvalues['jn_id'],
                   'json_key' =>  $keysvalues['json_key'],
-                  'select_type' =>  $keysvalues['select_type'],
+                  'select_type' =>  $keysvalues['field_select'],
                   'key_value_fmt' =>  $key_value_fmt_val,
                   'key_value_text' => $key_value_text,
                   'key_value_img' =>  $key_value_img,

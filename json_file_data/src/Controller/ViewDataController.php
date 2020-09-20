@@ -93,7 +93,10 @@ class ViewDataController extends ControllerBase
         foreach ($response as $jsonvalue) {
             $json_key[] = $jsonvalue->json_key;
            if((!is_null($jsonvalue->key_value_img))&&(!is_null($jsonvalue->key_value_img_alt))){
-                $val['src']=$jsonvalue->key_value_img;
+                $file = \Drupal\file\Entity\File::load($jsonvalue->key_value_img);
+                $uri = $file->getFileUri();
+                $url = \Drupal\Core\Url::fromUri(file_create_url($uri))->toString();
+                $val['src']=$url;
                 $val['alt']= $jsonvalue->key_value_img_alt;
             }
 
