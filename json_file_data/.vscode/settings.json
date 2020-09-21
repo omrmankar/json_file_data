@@ -1,0 +1,10 @@
+{
+  "phpformatter.composer": true,
+  "vscode-php-cs-fixer.allowRisky": true,
+  "vscode-php-cs-fixer.useCache": true,
+  "phpfmt.enable_auto_align": true,
+  "phpfmt.detect_indent": true,
+  "phpfmt.visibility_order": true,
+  "phpfmt.smart_linebreak_after_curly": true,
+  "phpfmt.yoda": true
+}

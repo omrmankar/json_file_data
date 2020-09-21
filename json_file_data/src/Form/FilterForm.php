@@ -72,6 +72,8 @@ class FilterForm extends FormBase
                 $json_name_id[] = $row['json_name_id'];
                 $page_name[] = $row['page_name'];
         }
+        $json_name_id[] = '';
+        $page_name[] = '';
         $JSONList=array_combine($json_name_id,$page_name);
 
         $form['form']['jn_id'] = [
