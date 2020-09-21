@@ -174,9 +174,9 @@ class JsonDataForm extends FormBase
               $json_name_id[] = $row['json_name_id'];
               $page_name[] = $row['page_name'];
       }
-
-        $JSONList=array_combine($json_name_id,$page_name);
-
+      $json_name_id[] = "";
+      $page_name[] ="";
+      $JSONList=array_combine($json_name_id,$page_name);
 
       $form['jn_id'] = [
           '#title' => $this->t('Select JSON name'),
