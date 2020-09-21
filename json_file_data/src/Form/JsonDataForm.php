@@ -223,21 +223,21 @@ class JsonDataForm extends FormBase
       $key_value_text = isset($keysvalues['key_value_text']) ? $keysvalues['key_value_text'] : '';
       $key_value_img = isset($keysvalues['key_value_img']['fids']) ?  $keysvalues['key_value_img']['fids'] : '';
 
-      /* Fetch the array of the file stored temporarily in database */
-        $image = $key_value_img;
+      // /* Fetch the array of the file stored temporarily in database */
+      //   $image = $key_value_img;
 
-      // // /* Load the object of the file by it's fid */
-        $file = File::load($image);
+      // // // /* Load the object of the file by it's fid */
+      //   $file = File::load($image);
 
-      // /* Set the status flag permanent of the file object */
-        $file->setPermanent();
+      // // /* Set the status flag permanent of the file object */
+      //   $file->setPermanent();
 
-      // /* Save the file in database */
-        $file->save();
+      // // /* Save the file in database */
+      //   $file->save();
 
-       $uri = $file->getFileUri();
-      //  print_r($uri);
-      //  exit();
+      //  $uri = $file->getFileUri();
+      // //  print_r($uri);
+      // //  exit();
 
       $jid = $form_state->getValue('jkv_id');
       if (isset($jid)){

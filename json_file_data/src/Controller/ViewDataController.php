@@ -94,8 +94,14 @@ class ViewDataController extends ControllerBase
             $json_key[] = $jsonvalue->json_key;
            if((!is_null($jsonvalue->key_value_img))&&(!is_null($jsonvalue->key_value_img_alt))){
                 $file = \Drupal\file\Entity\File::load($jsonvalue->key_value_img);
+               if(!is_null($file)){
                 $uri = $file->getFileUri();
                 $url = \Drupal\Core\Url::fromUri(file_create_url($uri))->toString();
+               }else{
+                   $uri = "";
+                   $url = "";
+               }
+
                 $val['src']=$url;
                 $val['alt']= $jsonvalue->key_value_img_alt;
             }
